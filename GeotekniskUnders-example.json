@@ -1,0 +1,270 @@
+{
+    "område": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [
+                    11.472015953958067,
+                    59.79769956374887
+                ],
+                [
+                    11.472407832751548,
+                    59.79769956396434
+                ],
+                [
+                    11.47279001634547,
+                    59.79803591254162
+                ],
+                [
+                    11.472790016985792,
+                    59.79848471002124
+                ],
+                [
+                    11.472233658420636,
+                    59.79865400280354
+                ],
+                [
+                    11.47184177367968,
+                    59.798654003006504
+                ],
+                [
+                    11.471490495916928,
+                    59.79822930122671
+                ],
+                [
+                    11.471490494843014,
+                    59.797780503413904
+                ],
+                [
+                    11.472015953958067,
+                    59.79769956374887
+                ]
+            ]
+        ]
+    },
+    "identifikasjon": null,
+    "oppdateringsdato": "2020-02-17T09:49:04Z",
+    "oppdragsgiver": "NGU",
+    "oppdragstaker": "NGUs geotekniske avdeling",
+    "prosjektNavn": "Grunnundersøkelser - test",
+    "eksternIdentifikasjon": {
+        "eksternId": "grunnundersøkelser - test",
+        "eksternNavnerom": "NO.NGU",
+        "eksternVersjonId": "1",
+        "eksternLeveringDato": "2020-02-17T09:49:04Z"
+    },
+    "representasjonKvalitet": "POLYGON_SOM_AVGRENSER_BOREHULL_I_GU_",
+    "opprettetDato": "2020-02-17T09:49:04Z",
+    "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+    "undersPkt": [
+        {
+            "posisjon": {
+                "type": "Point",
+                "coordinates": [
+                    11.47168643398995,
+                    59.798004902408934
+                ]
+            },
+            "identifikasjon": null,
+            "oppdateringsdato": "2020-02-17T09:49:04Z",
+            "antallBorehullUndersøkelser": 1,
+            "boreNr": "1",
+            "opprettetDato": "2020-02-17T09:49:04Z",
+            "eksternIdentifikasjon": {
+                "eksternLeveringDato": "2020-02-17T09:49:04Z"
+            },
+            "kvikkleirePåvisning": "SIKKER",
+            "opprinneligGeotekniskUndersID": "00a5aa84-7548-43ad-b487-23d0921361c9",
+            "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+            "maksBoretLengde": 12.0,
+            "harUndersøkelse": [
+                {
+                    "posisjon": {
+                        "type": "Point",
+                        "coordinates": [
+                            11.47168643398995,
+                            59.798004902408934
+                        ]
+                    },
+                    "identifikasjon": null,
+                    "oppdateringsdato": "2020-02-17T09:49:04Z",
+                    "boretLengde": 12.0,
+                    "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+                    "eksternIdentifikasjon": {
+                        "eksternLeveringDato": "2020-02-17T09:49:04Z"
+                    },
+                    "opprettetDato": "2020-02-17T09:49:04Z",
+                    "geotekniskMetode": "DREIESONDERING_MASKINELL"
+                }
+            ],
+            "harTolkning": []
+        },
+        {
+            "posisjon": {
+                "type": "Point",
+                "coordinates": [
+                    11.472037715467502,
+                    59.798429604669884
+                ]
+            },
+            "identifikasjon": null,
+            "oppdateringsdato": "2020-02-17T09:49:04Z",
+            "antallBorehullUndersøkelser": 1,
+            "boreNr": "2",
+            "opprettetDato": "2020-02-17T09:49:04Z",
+            "eksternIdentifikasjon": {
+                "eksternLeveringDato": "2020-02-17T09:49:04Z"
+            },
+            "kvikkleirePåvisning": "SIKKER",
+            "opprinneligGeotekniskUndersID": "00a5aa84-7548-43ad-b487-23d0921361c9",
+            "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+            "maksBoretLengde": 12.0,
+            "harUndersøkelse": [
+                {
+                    "posisjon": {
+                        "type": "Point",
+                        "coordinates": [
+                            11.472037715467502,
+                            59.798429604669884
+                        ]
+                    },
+                    "identifikasjon": null,
+                    "oppdateringsdato": "2020-02-17T09:49:04Z",
+                    "boretLengde": 12.0,
+                    "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+                    "eksternIdentifikasjon": {
+                        "eksternLeveringDato": "2020-02-17T09:49:04Z"
+                    },
+                    "opprettetDato": "2020-02-17T09:49:04Z",
+                    "geotekniskMetode": "DREIESONDERING_MASKINELL"
+                }
+            ],
+            "harTolkning": []
+        },
+        {
+            "posisjon": {
+                "type": "Point",
+                "coordinates": [
+                    11.472211894336922,
+                    59.79792396283911
+                ]
+            },
+            "identifikasjon": null,
+            "oppdateringsdato": "2020-02-17T09:49:04Z",
+            "antallBorehullUndersøkelser": 1,
+            "boreNr": "3",
+            "opprettetDato": "2020-02-17T09:49:04Z",
+            "eksternIdentifikasjon": {
+                "eksternLeveringDato": "2020-02-17T09:49:04Z"
+            },
+            "kvikkleirePåvisning": "SIKKER",
+            "opprinneligGeotekniskUndersID": "00a5aa84-7548-43ad-b487-23d0921361c9",
+            "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+            "maksBoretLengde": 12.0,
+            "harUndersøkelse": [
+                {
+                    "posisjon": {
+                        "type": "Point",
+                        "coordinates": [
+                            11.472211894336922,
+                            59.79792396283911
+                        ]
+                    },
+                    "identifikasjon": null,
+                    "oppdateringsdato": "2020-02-17T09:49:04Z",
+                    "boretLengde": 12.0,
+                    "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+                    "eksternIdentifikasjon": {
+                        "eksternLeveringDato": "2020-02-17T09:49:04Z"
+                    },
+                    "opprettetDato": "2020-02-17T09:49:04Z",
+                    "geotekniskMetode": "DREIESONDERING_MASKINELL"
+                }
+            ],
+            "harTolkning": []
+        },
+        {
+            "posisjon": {
+                "type": "Point",
+                "coordinates": [
+                    11.472594076646043,
+                    59.798260311934364
+                ]
+            },
+            "identifikasjon": null,
+            "oppdateringsdato": "2020-02-17T09:49:04Z",
+            "antallBorehullUndersøkelser": 1,
+            "boreNr": "4",
+            "opprettetDato": "2020-02-17T09:49:04Z",
+            "eksternIdentifikasjon": {
+                "eksternLeveringDato": "2020-02-17T09:49:04Z"
+            },
+            "kvikkleirePåvisning": "SIKKER",
+            "opprinneligGeotekniskUndersID": "00a5aa84-7548-43ad-b487-23d0921361c9",
+            "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+            "maksBoretLengde": 12.0,
+            "harUndersøkelse": [
+                {
+                    "posisjon": {
+                        "type": "Point",
+                        "coordinates": [
+                            11.472594076646043,
+                            59.798260311934364
+                        ]
+                    },
+                    "identifikasjon": null,
+                    "oppdateringsdato": "2020-02-17T09:49:04Z",
+                    "boretLengde": 12.0,
+                    "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+                    "eksternIdentifikasjon": {
+                        "eksternLeveringDato": "2020-02-17T09:49:04Z"
+                    },
+                    "opprettetDato": "2020-02-17T09:49:04Z",
+                    "geotekniskMetode": "DREIESONDERING_MASKINELL"
+                }
+            ],
+            "harTolkning": []
+        }
+    ],
+    "harTolkning": [],
+    "harDokument": [
+    {
+      "dokumentID": null,
+      "dokumentNøkkel": "Bilde-1",
+      "dokumentType": "Bilde",
+      "dokumentFilnavn": "kyle_southpark.jpg",
+      "dokumentURL": "",
+      "innholdType": "image/jpeg",
+      "beskrivelse": "",
+      "eksternIdentifikasjon": {
+        "eksternId": "1",
+        "eksternNavnerom": "navnerom",
+        "eksternVersjonId": "1",
+        "eksternLeveringDato": "2022-03-10T12:15:50-04:00"
+      },
+      "dokumentNavn": "kyle_southpark.jpg",
+      "opprettetDato": "2022-03-10T12:15:50-04:00",
+      "dokumentNr": "1",
+      "dokumentDato": "2022-03-10T12:15:50-04:00"
+    },
+    {
+      "dokumentID": null,
+      "dokumentNøkkel": "Bilde-2",
+      "dokumentType": "Bilde",
+      "dokumentFilnavn": "cartman_southpark.jpg",
+      "dokumentURL": "",
+      "innholdType": "image/png",
+      "beskrivelse": "",
+      "eksternIdentifikasjon": {
+        "eksternId": "1",
+        "eksternNavnerom": "navnerom",
+        "eksternVersjonId": "1",
+        "eksternLeveringDato": "2022-03-10T12:15:50-04:00"
+      },
+      "dokumentNavn": "cartman_southpark.jpg",
+      "opprettetDato": "2022-03-10T12:15:50-04:00",
+      "dokumentNr": "2",
+      "dokumentDato": "2022-03-10T12:15:50-04:00"
+    }
+  ]
+}
