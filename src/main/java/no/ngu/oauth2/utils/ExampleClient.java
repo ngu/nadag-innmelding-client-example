@@ -97,7 +97,7 @@ public class ExampleClient {
 
         HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
         URI uri =
-            URI.create(config.getApiEndpoint() + "/auth/token/maskinporten/" + config.getUserId());
+            URI.create(config.getApiEndpoint() + "/auth/token/" + config.getUserId());
         HttpRequest request =
             HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofString(access_token))
                 .header("Content-Type", "text/plain").header("Accept", "text/plain").build();
