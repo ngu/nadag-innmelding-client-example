@@ -152,7 +152,7 @@ public class ExampleClient {
           
           boolean guFatal = false;
           for (JsonElement diag : guDiagnostics) {
-            if (diag.getAsJsonObject().get("severity").getAsString() == "FATAL") {
+            if (diag.getAsJsonObject().get("severity").getAsString().equals("FATAL")) {
               guFatal = true;
             }
           }

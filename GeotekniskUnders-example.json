@@ -53,6 +53,7 @@
             "oppdateringsdato": "2020-02-17T09:49:04Z",
             "antallBorehullUndersøkelser": 1,
             "boreNr": "1",
+            "høydeReferanse": "5941",
             "opprettetDato": "2020-02-17T09:49:04Z",
             "eksternIdentifikasjon": {
                 "eksternLeveringDato": "2020-02-17T09:49:04Z"
@@ -74,6 +75,7 @@
                     "oppdateringsdato": "2020-02-17T09:49:04Z",
                     "boretLengde": 12.0,
                     "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+                    "høydeReferanse": "5941",
                     "eksternIdentifikasjon": {
                         "eksternLeveringDato": "2020-02-17T09:49:04Z"
                     },
@@ -95,6 +97,7 @@
             "oppdateringsdato": "2020-02-17T09:49:04Z",
             "antallBorehullUndersøkelser": 1,
             "boreNr": "2",
+            "høydeReferanse": "5941",
             "opprettetDato": "2020-02-17T09:49:04Z",
             "eksternIdentifikasjon": {
                 "eksternLeveringDato": "2020-02-17T09:49:04Z"
@@ -116,6 +119,7 @@
                     "oppdateringsdato": "2020-02-17T09:49:04Z",
                     "boretLengde": 12.0,
                     "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+                    "høydeReferanse": "5941",
                     "eksternIdentifikasjon": {
                         "eksternLeveringDato": "2020-02-17T09:49:04Z"
                     },
@@ -137,6 +141,7 @@
             "oppdateringsdato": "2020-02-17T09:49:04Z",
             "antallBorehullUndersøkelser": 1,
             "boreNr": "3",
+            "høydeReferanse": "5941",
             "opprettetDato": "2020-02-17T09:49:04Z",
             "eksternIdentifikasjon": {
                 "eksternLeveringDato": "2020-02-17T09:49:04Z"
@@ -158,6 +163,7 @@
                     "oppdateringsdato": "2020-02-17T09:49:04Z",
                     "boretLengde": 12.0,
                     "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+                    "høydeReferanse": "5941",
                     "eksternIdentifikasjon": {
                         "eksternLeveringDato": "2020-02-17T09:49:04Z"
                     },
@@ -179,6 +185,7 @@
             "oppdateringsdato": "2020-02-17T09:49:04Z",
             "antallBorehullUndersøkelser": 1,
             "boreNr": "4",
+            "høydeReferanse": "5941",
             "opprettetDato": "2020-02-17T09:49:04Z",
             "eksternIdentifikasjon": {
                 "eksternLeveringDato": "2020-02-17T09:49:04Z"
@@ -200,6 +207,7 @@
                     "oppdateringsdato": "2020-02-17T09:49:04Z",
                     "boretLengde": 12.0,
                     "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+                    "høydeReferanse": "5941",
                     "eksternIdentifikasjon": {
                         "eksternLeveringDato": "2020-02-17T09:49:04Z"
                     },
