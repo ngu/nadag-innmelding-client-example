@@ -84,6 +84,20 @@ public class ExampleClient {
 
         System.out.println("\nSignature verified: " + result);
       } else if (config.getTestFileName() != null) {
+
+        boolean withErrors = false;
+        String goOn = console.readLine("Continue uploading GU without errors (y/n)?: ");
+        if (goOn.equals("y") || goOn.equals("Y")) {
+          withErrors = false;
+          config.setTestFileName("GeotekniskUnders-example-ok.json");
+        }
+        else if (goOn.equals("n") || goOn.equals("N")) {
+          withErrors = true;
+        }
+        else {
+          System.exit(0);
+        }
+
         FileInputStream inputStream = new FileInputStream(config.getTestFileName());
         String testFile = new String(inputStream.readAllBytes());
         inputStream.close();
@@ -106,116 +120,209 @@ public class ExampleClient {
         System.out.println("Auth response: " + authResponse.statusCode());
         System.out.println("Auth response body: " + authResponse.body());
 
-        String goOn = console.readLine("Continue uploading attatchment one (y/n)?: ");
-        if (!goOn.equals("y") && !goOn.equals("Y")) {
-          System.exit(0);
-        }
-
-        FileInputStream attachmentInputStream = new FileInputStream(config.getAttachment1TestFileName());
-
-        uri = URI.create(config.getVedleggEndpoint() + "/vedlegg?name=" + config.getAttachment1TestFileName() + "&mimeType=image/jpeg");
-        request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofByteArray(attachmentInputStream.readAllBytes()))
-        .header("Authorization", "Bearer " + authResponse.body())
-        .header("Content-Type", "application/octet-stream")
-        .header("Accept", "application/json")
-        .build();
-
-        attachmentInputStream.close();
-        HttpResponse<String> vedleggResponse = client.send(request, BodyHandlers.ofString());
-        JsonObject vedleggResponseJson = JsonParser.parseString(vedleggResponse.body()).getAsJsonObject();
-        System.out.println("Vedlegg id: " + vedleggResponseJson.get("uuid").getAsString());
-        System.out.println("Vedlegg response: " + vedleggResponse.statusCode());
-
-        goOn = console.readLine("Continue uploading GU (y/n)?: ");
-        if (!goOn.equals("y") && !goOn.equals("Y")) {
-          System.exit(0);
-        }
-
-        testFileJson.get("harDokument").getAsJsonArray().get(0).getAsJsonObject().addProperty("dokumentID", vedleggResponseJson.get("uuid").getAsString());
-
-        uri = URI.create(
-            config.getApiEndpoint() + "/nadag/innmelding/v1/GeotekniskUnders?epsgCode=epsg_4326");
-        request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofString(testFileJson.toString()))
-            .header("Authorization", "Bearer " + authResponse.body())
-            .header("Content-Type", "application/json").header("Accept", "application/json")
-            .build();
-
-        HttpResponse<String> guResponse = client.send(request, BodyHandlers.ofString());
-        System.out.println("GU insert response: " + guResponse.statusCode());
-
-        if (guResponse.statusCode() == 200) {
-          JsonObject guResponseJson = JsonParser.parseString(guResponse.body()).getAsJsonObject();
-          JsonObject guIdentification = guResponseJson.get("geotekniskUnders").getAsJsonObject().get("identifikasjon").getAsJsonObject();
-          JsonArray guDiagnostics = guResponseJson.get("diagnostics").getAsJsonObject().get("diagnostics").getAsJsonArray();
-          JsonArray guAttachmentInfos = guResponseJson.get("attachmentInfos").getAsJsonObject().get("attachmentInfos").getAsJsonArray();
-          JsonArray guUndersPkt = guResponseJson.get("geotekniskUnders").getAsJsonObject().get("undersPkt").getAsJsonArray();
-          
-          boolean guFatal = false;
-          for (JsonElement diag : guDiagnostics) {
-            if (diag.getAsJsonObject().get("severity").getAsString().equals("FATAL")) {
-              guFatal = true;
-            }
-          }
-          
-          System.out.println("GU insert identifikasjon: " + guIdentification);
-          System.out.println("GU insert undersPkt count: " + guUndersPkt.size());
-          System.out.println("GU insert diagnostics count: " + guDiagnostics.size());
-          if (guFatal) System.out.println("GU insert diagnostics has FATAL errors!");
-          System.out.println("GU insert attachmentInfos count: " + guAttachmentInfos.size());
-
-          goOn = console.readLine("Continue uploading attatchment two (y/n)?: ");
+        if (withErrors) {
+          goOn = console.readLine("Continue uploading attatchment one (y/n)?: ");
           if (!goOn.equals("y") && !goOn.equals("Y")) {
             System.exit(0);
           }
 
-          FileInputStream attachmentInputStream2 = new FileInputStream(config.getAttachment2TestFileName());
+          FileInputStream attachmentInputStream = new FileInputStream(config.getAttachment1TestFileName());
 
-          uri = URI.create(config.getVedleggEndpoint() + "/vedlegg/" + guAttachmentInfos.get(0).getAsJsonObject().get("attachmentId").getAsString() + "?name=" + config.getAttachment2TestFileName() + "&mimeType=image/png&uniqId=" + guAttachmentInfos.get(0).getAsJsonObject().get("uniqId").getAsString());
-          request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofByteArray(attachmentInputStream2.readAllBytes()))
+          uri = URI.create(config.getVedleggEndpoint() + "/vedlegg?name=" + config.getAttachment1TestFileName() + "&mimeType=image/jpeg");
+          request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofByteArray(attachmentInputStream.readAllBytes()))
           .header("Authorization", "Bearer " + authResponse.body())
           .header("Content-Type", "application/octet-stream")
           .header("Accept", "application/json")
           .build();
 
-          attachmentInputStream2.close();
-          HttpResponse<String>vedleggResponse2 = client.send(request, BodyHandlers.ofString());
-          System.out.println("Vedlegg id: " + guAttachmentInfos.get(0).getAsJsonObject().get("attachmentId").getAsString());
-          System.out.println("Vedlegg response: " + vedleggResponse2.statusCode());
+          attachmentInputStream.close();
+          HttpResponse<String> vedleggResponse = client.send(request, BodyHandlers.ofString());
+          JsonObject vedleggResponseJson = JsonParser.parseString(vedleggResponse.body()).getAsJsonObject();
+          System.out.println("Vedlegg id: " + vedleggResponseJson.get("uuid").getAsString());
+          System.out.println("Vedlegg response: " + vedleggResponse.statusCode());
 
-          goOn = console.readLine("Continue updating GU (three times) (y/n)?: ");
+          goOn = console.readLine("Continue uploading GU (y/n)?: ");
           if (!goOn.equals("y") && !goOn.equals("Y")) {
             System.exit(0);
           }
 
-          String guLokalId = guIdentification.get("lokalId").getAsString();
-          uri = URI.create(
-            config.getApiEndpoint() + "/nadag/innmelding/v1/GeotekniskUnders/" +guLokalId+  "?epsgCode=epsg_4326");
+          UUID attachment2Id = UUID.randomUUID();
+          testFileJson.get("harDokument").getAsJsonArray().get(0).getAsJsonObject().addProperty("dokumentID", vedleggResponseJson.get("uuid").getAsString());
+          testFileJson.get("harDokument").getAsJsonArray().get(1).getAsJsonObject().addProperty("dokumentID", attachment2Id.toString());
 
-          for (int i = 0; i < 3; ++i) {
-            guResponseJson.get("geotekniskUnders").getAsJsonObject().get("undersPkt").getAsJsonArray().remove(0);
-            request = HttpRequest.newBuilder().uri(uri).PUT(BodyPublishers.ofString(guResponseJson.get("geotekniskUnders").getAsJsonObject().toString()))
+          uri = URI.create(
+              config.getApiEndpoint() + "/v1/GeotekniskUnders?epsgCode=epsg_4326");
+          request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofString(testFileJson.toString()))
               .header("Authorization", "Bearer " + authResponse.body())
               .header("Content-Type", "application/json").header("Accept", "application/json")
               .build();
 
-            HttpResponse<String> guUpdateResponse = client.send(request, BodyHandlers.ofString());
-            System.out.println("GU update response: " + guUpdateResponse.statusCode());
-            JsonObject guUpdateResponseJson = JsonParser.parseString(guUpdateResponse.body()).getAsJsonObject();
-            JsonArray guUpdateDiagnostics = guUpdateResponseJson.get("diagnostics").getAsJsonObject().get("diagnostics").getAsJsonArray();
-            JsonArray guUpdateUndersPkt = guUpdateResponseJson.get("geotekniskUnders").getAsJsonObject().get("undersPkt").getAsJsonArray();
+          HttpResponse<String> guResponse = client.send(request, BodyHandlers.ofString());
+          System.out.println("GU insert response: " + guResponse.statusCode());
 
-            guFatal = false;
-            for (JsonElement diag : guUpdateDiagnostics) {
-              if (diag.getAsJsonObject().get("severity").getAsString() == "FATAL") {
+          if (guResponse.statusCode() == 200) {
+            JsonObject guResponseJson = JsonParser.parseString(guResponse.body()).getAsJsonObject();
+            JsonObject guIdentification = guResponseJson.get("geotekniskUnders").getAsJsonObject().get("identifikasjon").getAsJsonObject();
+            JsonArray guDiagnostics = guResponseJson.get("diagnostics").getAsJsonObject().get("diagnostics").getAsJsonArray();
+            //JsonArray guAttachmentInfos = guResponseJson.get("attachmentInfos").getAsJsonObject().get("attachmentInfos").getAsJsonArray();
+            JsonArray guUndersPkt = guResponseJson.get("geotekniskUnders").getAsJsonObject().get("undersPkt").getAsJsonArray();
+            
+            boolean guFatal = false;
+            for (JsonElement diag : guDiagnostics) {
+              if (diag.getAsJsonObject().get("severity").getAsString().equals("FATAL")) {
                 guFatal = true;
               }
             }
+            
+            System.out.println("GU insert identifikasjon: " + guIdentification);
+            System.out.println("GU insert undersPkt count: " + guUndersPkt.size());
+            System.out.println("GU insert diagnostics count: " + guDiagnostics.size());
+            if (guFatal) System.out.println("GU insert diagnostics has FATAL errors!");
 
-            System.out.println("GU update undersPkt count: " + guUpdateUndersPkt.size());
-            System.out.println("GU update diagnostics count: " + guUpdateDiagnostics.size());
-            if (guFatal) System.out.println("GU update diagnostics has FATAL errors!");
+            goOn = console.readLine("Continue uploading attatchment two (y/n)?: ");
+            if (!goOn.equals("y") && !goOn.equals("Y")) {
+              System.exit(0);
+            }
+
+            FileInputStream attachmentInputStream2 = new FileInputStream(config.getAttachment2TestFileName());
+
+            uri = URI.create(config.getVedleggEndpoint() + "/vedlegg/" + attachment2Id.toString() + "?name=" + config.getAttachment2TestFileName() + "&mimeType=image/png");
+            request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofByteArray(attachmentInputStream2.readAllBytes()))
+            .header("Authorization", "Bearer " + authResponse.body())
+            .header("Content-Type", "application/octet-stream")
+            .header("Accept", "application/json")
+            .build();
+
+            attachmentInputStream2.close();
+            HttpResponse<String>vedleggResponse2 = client.send(request, BodyHandlers.ofString());
+            System.out.println("Vedlegg response: " + vedleggResponse2.statusCode());
+
+            goOn = console.readLine("Continue updating GU (three times) (y/n)?: ");
+            if (!goOn.equals("y") && !goOn.equals("Y")) {
+              System.exit(0);
+            }
+
+            String guLokalId = guIdentification.get("lokalId").getAsString();
+            uri = URI.create(
+              config.getApiEndpoint() + "/v1/GeotekniskUnders/" +guLokalId+  "?epsgCode=epsg_4326");
+
+            for (int i = 0; i < 3; ++i) {
+              guResponseJson.get("geotekniskUnders").getAsJsonObject().get("undersPkt").getAsJsonArray().remove(0);
+              request = HttpRequest.newBuilder().uri(uri).PUT(BodyPublishers.ofString(guResponseJson.get("geotekniskUnders").getAsJsonObject().toString()))
+                .header("Authorization", "Bearer " + authResponse.body())
+                .header("Content-Type", "application/json").header("Accept", "application/json")
+                .build();
+
+              HttpResponse<String> guUpdateResponse = client.send(request, BodyHandlers.ofString());
+              System.out.println("GU update response: " + guUpdateResponse.statusCode());
+              JsonObject guUpdateResponseJson = JsonParser.parseString(guUpdateResponse.body()).getAsJsonObject();
+              JsonArray guUpdateDiagnostics = guUpdateResponseJson.get("diagnostics").getAsJsonObject().get("diagnostics").getAsJsonArray();
+              JsonArray guUpdateUndersPkt = guUpdateResponseJson.get("geotekniskUnders").getAsJsonObject().get("undersPkt").getAsJsonArray();
+
+              guFatal = false;
+              for (JsonElement diag : guUpdateDiagnostics) {
+                if (diag.getAsJsonObject().get("severity").getAsString() == "FATAL") {
+                  guFatal = true;
+                }
+              }
+
+              System.out.println("GU update undersPkt count: " + guUpdateUndersPkt.size());
+              System.out.println("GU update diagnostics count: " + guUpdateDiagnostics.size());
+              if (guFatal) System.out.println("GU update diagnostics has FATAL errors!");
+            }
           }
         }
+        else {
+          goOn = console.readLine("Continue uploading attatchments (y/n)?: ");
+          if (!goOn.equals("y") && !goOn.equals("Y")) {
+            System.exit(0);
+          }
+
+          FileInputStream reportInputStream = new FileInputStream(config.getTestReport());
+
+          uri = URI.create(config.getVedleggEndpoint() + "/vedlegg?name=" + config.getTestReport() + "&mimeType=application/pdf");
+          request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofByteArray(reportInputStream.readAllBytes()))
+          .header("Authorization", "Bearer " + authResponse.body())
+          .header("Content-Type", "application/octet-stream")
+          .header("Accept", "application/json")
+          .build();
+
+          reportInputStream.close();
+          HttpResponse<String> reportResponse = client.send(request, BodyHandlers.ofString());
+          JsonObject reportResponseJson = JsonParser.parseString(reportResponse.body()).getAsJsonObject();
+          System.out.println("Vedlegg id: " + reportResponseJson.get("uuid").getAsString());
+          System.out.println("Vedlegg response: " + reportResponse.statusCode());
+
+          testFileJson.get("harDokument").getAsJsonArray().get(0).getAsJsonObject().addProperty("dokumentID", reportResponseJson.get("uuid").getAsString());
+
+          FileInputStream attachmentInputStream = new FileInputStream(config.getAttachment1TestFileName());
+
+          uri = URI.create(config.getVedleggEndpoint() + "/vedlegg?name=" + config.getAttachment1TestFileName() + "&mimeType=image/jpeg");
+          request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofByteArray(attachmentInputStream.readAllBytes()))
+          .header("Authorization", "Bearer " + authResponse.body())
+          .header("Content-Type", "application/octet-stream")
+          .header("Accept", "application/json")
+          .build();
+
+          attachmentInputStream.close();
+          HttpResponse<String> vedleggResponse = client.send(request, BodyHandlers.ofString());
+          JsonObject vedleggResponseJson = JsonParser.parseString(vedleggResponse.body()).getAsJsonObject();
+          System.out.println("Vedlegg id: " + vedleggResponseJson.get("uuid").getAsString());
+          System.out.println("Vedlegg response: " + vedleggResponse.statusCode());
+
+          testFileJson.get("undersPkt").getAsJsonArray().get(0).getAsJsonObject().get("harDokument").getAsJsonArray().get(0).getAsJsonObject().addProperty("dokumentID", vedleggResponseJson.get("uuid").getAsString());
+
+          FileInputStream attachment2InputStream = new FileInputStream(config.getAttachment2TestFileName());
+
+          uri = URI.create(config.getVedleggEndpoint() + "/vedlegg?name=" + config.getAttachment2TestFileName() + "&mimeType=image/png");
+          request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofByteArray(attachment2InputStream.readAllBytes()))
+          .header("Authorization", "Bearer " + authResponse.body())
+          .header("Content-Type", "application/octet-stream")
+          .header("Accept", "application/json")
+          .build();
+
+          attachment2InputStream.close();
+          HttpResponse<String> vedlegg2Response = client.send(request, BodyHandlers.ofString());
+          JsonObject vedlegg2ResponseJson = JsonParser.parseString(vedleggResponse.body()).getAsJsonObject();
+          System.out.println("Vedlegg id: " + vedlegg2ResponseJson.get("uuid").getAsString());
+          System.out.println("Vedlegg response: " + vedlegg2Response.statusCode());
+
+          testFileJson.get("undersPkt").getAsJsonArray().get(0).getAsJsonObject().get("harUndersøkelse").getAsJsonArray().get(0).getAsJsonObject().get("harDokument").getAsJsonArray().get(0).getAsJsonObject().addProperty("dokumentID", vedlegg2ResponseJson.get("uuid").getAsString());
+
+          goOn = console.readLine("Continue uploading GU (y/n)?: ");
+          if (!goOn.equals("y") && !goOn.equals("Y")) {
+            System.exit(0);
+          }
+
+          uri = URI.create(
+              config.getApiEndpoint() + "/v1/GeotekniskUnders?epsgCode=epsg_4326");
+          request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofString(testFileJson.toString()))
+              .header("Authorization", "Bearer " + authResponse.body())
+              .header("Content-Type", "application/json").header("Accept", "application/json")
+              .build();
+
+          HttpResponse<String> guResponse = client.send(request, BodyHandlers.ofString());
+          System.out.println("GU insert response: " + guResponse.statusCode());
+
+          if (guResponse.statusCode() == 200) {
+            JsonObject guResponseJson = JsonParser.parseString(guResponse.body()).getAsJsonObject();
+            JsonObject guIdentification = guResponseJson.get("geotekniskUnders").getAsJsonObject().get("identifikasjon").getAsJsonObject();
+            JsonArray guDiagnostics = guResponseJson.get("diagnostics").getAsJsonObject().get("diagnostics").getAsJsonArray();
+            JsonArray guUndersPkt = guResponseJson.get("geotekniskUnders").getAsJsonObject().get("undersPkt").getAsJsonArray();
+            
+            boolean guFatal = false;
+            for (JsonElement diag : guDiagnostics) {
+              if (diag.getAsJsonObject().get("severity").getAsString().equals("FATAL")) {
+                guFatal = true;
+              }
+            }
+            
+            System.out.println("GU insert identifikasjon: " + guIdentification);
+            System.out.println("GU insert undersPkt count: " + guUndersPkt.size());
+            System.out.println("GU insert diagnostics count: " + guDiagnostics.size());
+            if (guFatal) System.out.println("GU insert diagnostics has FATAL errors!");
+          }
+        } 
       }
     }
   }

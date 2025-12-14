@@ -1,0 +1,157 @@
+{
+  "område": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          9.8334255276577,
+          63.48991653936301
+        ],
+        [
+          9.862756804725468,
+          63.49109319171244
+        ],
+        [
+          9.865341621558981,
+          63.479980382861434
+        ],
+        [
+          9.835150105272845,
+          63.478915600894645
+        ],
+        [
+          9.8334255276577,
+          63.48991653936301
+        ]
+      ]
+    ]
+  },
+  "identifikasjon": null,
+  "oppdateringsdato": "2020-02-17T09:49:04Z",
+  "oppdragsgiver": "NGU",
+  "oppdragstaker": "NGUs geotekniske avdeling",
+  "prosjektNavn": "Grunnundersøkelser - test",
+  "eksternIdentifikasjon": {
+    "eksternId": "grunnundersøkelser - test",
+    "eksternNavnerom": "NO.NGU",
+    "eksternVersjonId": "1",
+    "eksternLeveringDato": "2020-02-17T09:49:04Z"
+  },
+  "representasjonKvalitet": "POLYGON_SOM_AVGRENSER_BOREHULL_I_GU_",
+  "opprettetDato": "2020-02-17T09:49:04Z",
+  "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+  "undersøkelseÅrAntatt": 2025,
+  "undersPkt": [
+    {
+      "posisjon": {
+        "type": "Point",
+        "coordinates": [
+          9.8478752,
+          63.4842905
+        ]
+      },
+      "identifikasjon": null,
+      "oppdateringsdato": "2020-02-17T09:49:04Z",
+      "antallBorehullUndersøkelser": 1,
+      "boreNr": "1",
+      "høyde" : 2.0,
+      "høydeReferanse": "5941",
+      "opprettetDato": "2020-02-17T09:49:04Z",
+      "eksternIdentifikasjon": {
+        "eksternLeveringDato": "2020-02-17T09:49:04Z"
+      },
+      "kvikkleirePåvisning": "SIKKER",
+      "opprinneligGeotekniskUndersID": "00a5aa84-7548-43ad-b487-23d0921361c9",
+      "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+      "maksBoretLengde": 12.0,
+      "harUndersøkelse": [
+        {
+          "posisjon": {
+            "type": "Point",
+            "coordinates": [
+              9.8478752,
+              63.4842905
+            ]
+          },
+          "identifikasjon": null,
+          "oppdateringsdato": "2020-02-17T09:49:04Z",
+          "boretLengde": 12.0,
+          "opphav": "Levert til NADAG WebReg av NGU 2020-02-17",
+          "høyde" : 2.0,
+          "høydeReferanse": "5941",
+          "eksternIdentifikasjon": {
+            "eksternLeveringDato": "2020-02-17T09:49:04Z"
+          },
+          "opprettetDato": "2020-02-17T09:49:04Z",
+          "geotekniskMetode": "DREIESONDERING_MASKINELL",
+          "stoppKode": "SONDERINGAVSLUTTETUTENSTOPP",
+          "harDokument": [
+            {
+              "dokumentID": null,
+              "dokumentNøkkel": "Bilde-2",
+              "dokumentType": "ProfileImage",
+              "dokumentFilnavn": "cartman_southpark.png",
+              "dokumentURL": "",
+              "innholdType": "image/png",
+              "beskrivelse": "",
+              "eksternIdentifikasjon": {
+                "eksternId": "2",
+                "eksternNavnerom": "navnerom",
+                "eksternVersjonId": "1",
+                "eksternLeveringDato": "2022-03-10T12:15:50-04:00"
+              },
+              "dokumentNavn": "cartman_southpark.png",
+              "opprettetDato": "2022-03-10T12:15:50-04:00",
+              "dokumentNr": "2",
+              "dokumentDato": "2022-03-10T12:15:50-04:00"
+            }
+          ]
+        }
+      ],
+      "harTolkning": [],
+      "harDokument": [
+        {
+          "dokumentID": null,
+          "dokumentNøkkel": "Bilde-1",
+          "dokumentType": "ProfileImage",
+          "dokumentFilnavn": "kyle_southpark.jpg",
+          "dokumentURL": "",
+          "innholdType": "image/jpeg",
+          "beskrivelse": "",
+          "eksternIdentifikasjon": {
+            "eksternId": "1",
+            "eksternNavnerom": "navnerom",
+            "eksternVersjonId": "1",
+            "eksternLeveringDato": "2022-03-10T12:15:50-04:00"
+          },
+          "dokumentNavn": "kyle_southpark.jpg",
+          "opprettetDato": "2022-03-10T12:15:50-04:00",
+          "dokumentNr": "1",
+          "dokumentDato": "2022-03-10T12:15:50-04:00"
+        }
+      ]
+    }
+  ],
+  "harTolkning": [],
+  "harDokument": [
+    {
+      "dokumentID": null,
+      "dokumentNøkkel": "Rapport-1",
+      "dokumentType": "GeoReport",
+      "dokumentFilnavn": "test_rapport.pdf",
+      "dokumentURL": "",
+      "innholdType": "application/pdf",
+      "beskrivelse": "",
+      "eksternIdentifikasjon": {
+        "eksternId": "1",
+        "eksternNavnerom": "navnerom",
+        "eksternVersjonId": "1",
+        "eksternLeveringDato": "2022-03-10T12:15:50-04:00"
+      },
+      "dokumentNavn": "test_rapport.pdf",
+      "opprettetDato": "2022-03-10T12:15:50-04:00",
+      "dokumentNr": "1",
+      "dokumentDato": "2022-03-10T12:15:50-04:00"
+    }
+  ]
+}

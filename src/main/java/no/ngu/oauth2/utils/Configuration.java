@@ -25,8 +25,11 @@ public class Configuration {
   private Boolean verify = false;
   private String kid;
   private String testFileName;
+  private String testReport;
   private String testAttachment1FileName;
   private String testAttachment2FileName;
+  private String testAttachment3FileName;
+  private String testAttachment4FileName;
   private String apiEndpoint;
   private String vedleggEndpoint;
   private String userId;
@@ -137,6 +140,14 @@ public class Configuration {
     this.testFileName = testFileName;
   }
 
+  public String getTestReport() {
+    return testReport;
+  }
+
+  public void setTestReport(String testReport) {
+    this.testReport = testReport;
+  }
+
   public String getAttachment1TestFileName() {
     return testAttachment1FileName;
   }
@@ -151,6 +162,22 @@ public class Configuration {
 
   public void setTestAttachment2FileName(String testAttachmentFileName) {
     this.testAttachment2FileName = testAttachmentFileName;
+  }
+
+  public String getAttachment3TestFileName() {
+    return testAttachment3FileName;
+  }
+
+  public void setTestAttachment3FileName(String testAttachmentFileName) {
+    this.testAttachment3FileName = testAttachmentFileName;
+  }
+
+  public String getAttachment4TestFileName() {
+    return testAttachment4FileName;
+  }
+
+  public void setTestAttachment4FileName(String testAttachmentFileName) {
+    this.testAttachment4FileName = testAttachmentFileName;
   }
 
   public String getApiEndpoint() {
@@ -197,8 +224,11 @@ public class Configuration {
       config.setUserId(props.getProperty("user_uuid"));
 
       config.setTestFileName("GeotekniskUnders-example.json");
+      config.setTestReport("test_rapport.pdf");
       config.setTestAttachment1FileName("kyle_southpark.jpg");
       config.setTestAttachment2FileName("cartman_southpark.png");
+      config.setTestAttachment3FileName("stan_southpark.jpg");
+      config.setTestAttachment4FileName("kenny_southpark.png");
       
       String certificate = props.getProperty("certificate");
       String privatekey = props.getProperty("private_key");
