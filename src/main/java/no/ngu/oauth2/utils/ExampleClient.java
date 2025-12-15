@@ -36,9 +36,11 @@ import java.util.Map;
 import java.util.UUID;
 
 public class ExampleClient {
+  private static Configuration config;
+  private static HttpClient client;
 
   public static void main(String[] args) throws Exception {
-    Configuration config = Configuration.load(args);
+    config = Configuration.load(args);
     Console console = System.console();
 
     String jwt = makeJwt(config);
@@ -64,13 +66,11 @@ public class ExampleClient {
       if (config.getVerify()) {
         JsonObject responseJson = JsonParser.parseString(response).getAsJsonObject();
 
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request =
-            HttpRequest.newBuilder().uri(URI.create(config.getVerificationEndpoint())).build();
+        client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(config.getVerificationEndpoint())).build();
 
         HttpResponse<String> maskinportenResponse = client.send(request, BodyHandlers.ofString());
-        JsonObject maskinportenResponseJson =
-            JsonParser.parseString(maskinportenResponse.body()).getAsJsonObject();
+        JsonObject maskinportenResponseJson = JsonParser.parseString(maskinportenResponse.body()).getAsJsonObject();
 
         boolean result;
         try {
@@ -109,12 +109,10 @@ public class ExampleClient {
         JsonObject responseJson = JsonParser.parseString(response).getAsJsonObject();
         String access_token = responseJson.get("access_token").getAsString();
 
-        HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
-        URI uri =
-            URI.create(config.getApiEndpoint() + "/auth/token/" + config.getUserId());
-        HttpRequest request =
-            HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofString(access_token))
-                .header("Content-Type", "text/plain").header("Accept", "text/plain").build();
+        client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
+        URI uri = URI.create(config.getApiEndpoint() + "/auth/token/" + config.getUserId());
+        HttpRequest request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofString(access_token))
+            .header("Content-Type", "text/plain").header("Accept", "text/plain").build();
 
         HttpResponse<String> authResponse = client.send(request, BodyHandlers.ofString());
         System.out.println("Auth response: " + authResponse.statusCode());
@@ -126,20 +124,7 @@ public class ExampleClient {
             System.exit(0);
           }
 
-          FileInputStream attachmentInputStream = new FileInputStream(config.getAttachment1TestFileName());
-
-          uri = URI.create(config.getVedleggEndpoint() + "/vedlegg?name=" + config.getAttachment1TestFileName() + "&mimeType=image/jpeg");
-          request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofByteArray(attachmentInputStream.readAllBytes()))
-          .header("Authorization", "Bearer " + authResponse.body())
-          .header("Content-Type", "application/octet-stream")
-          .header("Accept", "application/json")
-          .build();
-
-          attachmentInputStream.close();
-          HttpResponse<String> vedleggResponse = client.send(request, BodyHandlers.ofString());
-          JsonObject vedleggResponseJson = JsonParser.parseString(vedleggResponse.body()).getAsJsonObject();
-          System.out.println("Vedlegg id: " + vedleggResponseJson.get("uuid").getAsString());
-          System.out.println("Vedlegg response: " + vedleggResponse.statusCode());
+          UUID attachment1Id = createGb(null, config.getAttachment1TestFileName(), authResponse.body(), "image/jpeg");
 
           goOn = console.readLine("Continue uploading GU (y/n)?: ");
           if (!goOn.equals("y") && !goOn.equals("Y")) {
@@ -147,24 +132,15 @@ public class ExampleClient {
           }
 
           UUID attachment2Id = UUID.randomUUID();
-          testFileJson.get("harDokument").getAsJsonArray().get(0).getAsJsonObject().addProperty("dokumentID", vedleggResponseJson.get("uuid").getAsString());
+          testFileJson.get("harDokument").getAsJsonArray().get(0).getAsJsonObject().addProperty("dokumentID", attachment1Id.toString());
           testFileJson.get("harDokument").getAsJsonArray().get(1).getAsJsonObject().addProperty("dokumentID", attachment2Id.toString());
 
-          uri = URI.create(
-              config.getApiEndpoint() + "/v1/GeotekniskUnders?epsgCode=epsg_4326");
-          request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofString(testFileJson.toString()))
-              .header("Authorization", "Bearer " + authResponse.body())
-              .header("Content-Type", "application/json").header("Accept", "application/json")
-              .build();
-
-          HttpResponse<String> guResponse = client.send(request, BodyHandlers.ofString());
-          System.out.println("GU insert response: " + guResponse.statusCode());
+          HttpResponse<String> guResponse = createGu(testFileJson, authResponse.body(), "epsg_4326");
 
           if (guResponse.statusCode() == 200) {
             JsonObject guResponseJson = JsonParser.parseString(guResponse.body()).getAsJsonObject();
             JsonObject guIdentification = guResponseJson.get("geotekniskUnders").getAsJsonObject().get("identifikasjon").getAsJsonObject();
             JsonArray guDiagnostics = guResponseJson.get("diagnostics").getAsJsonObject().get("diagnostics").getAsJsonArray();
-            //JsonArray guAttachmentInfos = guResponseJson.get("attachmentInfos").getAsJsonObject().get("attachmentInfos").getAsJsonArray();
             JsonArray guUndersPkt = guResponseJson.get("geotekniskUnders").getAsJsonObject().get("undersPkt").getAsJsonArray();
             
             boolean guFatal = false;
@@ -184,18 +160,7 @@ public class ExampleClient {
               System.exit(0);
             }
 
-            FileInputStream attachmentInputStream2 = new FileInputStream(config.getAttachment2TestFileName());
-
-            uri = URI.create(config.getVedleggEndpoint() + "/vedlegg/" + attachment2Id.toString() + "?name=" + config.getAttachment2TestFileName() + "&mimeType=image/png");
-            request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofByteArray(attachmentInputStream2.readAllBytes()))
-            .header("Authorization", "Bearer " + authResponse.body())
-            .header("Content-Type", "application/octet-stream")
-            .header("Accept", "application/json")
-            .build();
-
-            attachmentInputStream2.close();
-            HttpResponse<String>vedleggResponse2 = client.send(request, BodyHandlers.ofString());
-            System.out.println("Vedlegg response: " + vedleggResponse2.statusCode());
+            createGb(attachment2Id.toString(), config.getAttachment2TestFileName(), authResponse.body(), "image/png");
 
             goOn = console.readLine("Continue updating GU (three times) (y/n)?: ");
             if (!goOn.equals("y") && !goOn.equals("Y")) {
@@ -203,17 +168,10 @@ public class ExampleClient {
             }
 
             String guLokalId = guIdentification.get("lokalId").getAsString();
-            uri = URI.create(
-              config.getApiEndpoint() + "/v1/GeotekniskUnders/" +guLokalId+  "?epsgCode=epsg_4326");
 
             for (int i = 0; i < 3; ++i) {
               guResponseJson.get("geotekniskUnders").getAsJsonObject().get("undersPkt").getAsJsonArray().remove(0);
-              request = HttpRequest.newBuilder().uri(uri).PUT(BodyPublishers.ofString(guResponseJson.get("geotekniskUnders").getAsJsonObject().toString()))
-                .header("Authorization", "Bearer " + authResponse.body())
-                .header("Content-Type", "application/json").header("Accept", "application/json")
-                .build();
-
-              HttpResponse<String> guUpdateResponse = client.send(request, BodyHandlers.ofString());
+              HttpResponse<String> guUpdateResponse = updateGu(guLokalId, guResponseJson.get("geotekniskUnders").getAsJsonObject(), authResponse.body(), "epsg_4326");
               System.out.println("GU update response: " + guUpdateResponse.statusCode());
               JsonObject guUpdateResponseJson = JsonParser.parseString(guUpdateResponse.body()).getAsJsonObject();
               JsonArray guUpdateDiagnostics = guUpdateResponseJson.get("diagnostics").getAsJsonObject().get("diagnostics").getAsJsonArray();
@@ -238,71 +196,21 @@ public class ExampleClient {
             System.exit(0);
           }
 
-          FileInputStream reportInputStream = new FileInputStream(config.getTestReport());
+          UUID attachment1Id = createGb(null, config.getTestReport(), authResponse.body(), "application/pdf");
+          testFileJson.get("harDokument").getAsJsonArray().get(0).getAsJsonObject().addProperty("dokumentID", attachment1Id.toString());
 
-          uri = URI.create(config.getVedleggEndpoint() + "/vedlegg?name=" + config.getTestReport() + "&mimeType=application/pdf");
-          request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofByteArray(reportInputStream.readAllBytes()))
-          .header("Authorization", "Bearer " + authResponse.body())
-          .header("Content-Type", "application/octet-stream")
-          .header("Accept", "application/json")
-          .build();
+          UUID attachment2Id = createGb(null, config.getAttachment1TestFileName(), authResponse.body(), "image/jpeg");
+          testFileJson.get("undersPkt").getAsJsonArray().get(0).getAsJsonObject().get("harDokument").getAsJsonArray().get(0).getAsJsonObject().addProperty("dokumentID", attachment2Id.toString());
 
-          reportInputStream.close();
-          HttpResponse<String> reportResponse = client.send(request, BodyHandlers.ofString());
-          JsonObject reportResponseJson = JsonParser.parseString(reportResponse.body()).getAsJsonObject();
-          System.out.println("Vedlegg id: " + reportResponseJson.get("uuid").getAsString());
-          System.out.println("Vedlegg response: " + reportResponse.statusCode());
-
-          testFileJson.get("harDokument").getAsJsonArray().get(0).getAsJsonObject().addProperty("dokumentID", reportResponseJson.get("uuid").getAsString());
-
-          FileInputStream attachmentInputStream = new FileInputStream(config.getAttachment1TestFileName());
-
-          uri = URI.create(config.getVedleggEndpoint() + "/vedlegg?name=" + config.getAttachment1TestFileName() + "&mimeType=image/jpeg");
-          request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofByteArray(attachmentInputStream.readAllBytes()))
-          .header("Authorization", "Bearer " + authResponse.body())
-          .header("Content-Type", "application/octet-stream")
-          .header("Accept", "application/json")
-          .build();
-
-          attachmentInputStream.close();
-          HttpResponse<String> vedleggResponse = client.send(request, BodyHandlers.ofString());
-          JsonObject vedleggResponseJson = JsonParser.parseString(vedleggResponse.body()).getAsJsonObject();
-          System.out.println("Vedlegg id: " + vedleggResponseJson.get("uuid").getAsString());
-          System.out.println("Vedlegg response: " + vedleggResponse.statusCode());
-
-          testFileJson.get("undersPkt").getAsJsonArray().get(0).getAsJsonObject().get("harDokument").getAsJsonArray().get(0).getAsJsonObject().addProperty("dokumentID", vedleggResponseJson.get("uuid").getAsString());
-
-          FileInputStream attachment2InputStream = new FileInputStream(config.getAttachment2TestFileName());
-
-          uri = URI.create(config.getVedleggEndpoint() + "/vedlegg?name=" + config.getAttachment2TestFileName() + "&mimeType=image/png");
-          request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofByteArray(attachment2InputStream.readAllBytes()))
-          .header("Authorization", "Bearer " + authResponse.body())
-          .header("Content-Type", "application/octet-stream")
-          .header("Accept", "application/json")
-          .build();
-
-          attachment2InputStream.close();
-          HttpResponse<String> vedlegg2Response = client.send(request, BodyHandlers.ofString());
-          JsonObject vedlegg2ResponseJson = JsonParser.parseString(vedleggResponse.body()).getAsJsonObject();
-          System.out.println("Vedlegg id: " + vedlegg2ResponseJson.get("uuid").getAsString());
-          System.out.println("Vedlegg response: " + vedlegg2Response.statusCode());
-
-          testFileJson.get("undersPkt").getAsJsonArray().get(0).getAsJsonObject().get("harUndersøkelse").getAsJsonArray().get(0).getAsJsonObject().get("harDokument").getAsJsonArray().get(0).getAsJsonObject().addProperty("dokumentID", vedlegg2ResponseJson.get("uuid").getAsString());
+          UUID attachment3Id = createGb(null, config.getAttachment2TestFileName(), authResponse.body(), "image/png");
+          testFileJson.get("undersPkt").getAsJsonArray().get(0).getAsJsonObject().get("harUndersøkelse").getAsJsonArray().get(0).getAsJsonObject().get("harDokument").getAsJsonArray().get(0).getAsJsonObject().addProperty("dokumentID", attachment3Id.toString());
 
           goOn = console.readLine("Continue uploading GU (y/n)?: ");
           if (!goOn.equals("y") && !goOn.equals("Y")) {
             System.exit(0);
           }
 
-          uri = URI.create(
-              config.getApiEndpoint() + "/v1/GeotekniskUnders?epsgCode=epsg_4326");
-          request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofString(testFileJson.toString()))
-              .header("Authorization", "Bearer " + authResponse.body())
-              .header("Content-Type", "application/json").header("Accept", "application/json")
-              .build();
-
-          HttpResponse<String> guResponse = client.send(request, BodyHandlers.ofString());
-          System.out.println("GU insert response: " + guResponse.statusCode());
+          HttpResponse<String> guResponse = createGu(testFileJson, authResponse.body(), "epsg_4326");
 
           if (guResponse.statusCode() == 200) {
             JsonObject guResponseJson = JsonParser.parseString(guResponse.body()).getAsJsonObject();
@@ -327,8 +235,52 @@ public class ExampleClient {
     }
   }
 
-  private static String makeJwt(Configuration config) throws Exception {
+  private static UUID createGb(String gbId, String filename, String authToken, String mimeType) throws Exception {
+    FileInputStream attachmentInputStream = new FileInputStream(filename);
 
+    URI uri = URI.create(config.getVedleggEndpoint() + "/vedlegg" + (gbId == null ? "" : "/" + gbId) + "?name=" + filename + "&mimeType=" + mimeType);
+    HttpRequest request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofByteArray(attachmentInputStream.readAllBytes()))
+        .header("Authorization", "Bearer " + authToken)
+        .header("Content-Type", "application/octet-stream")
+        .header("Accept", "application/json")
+        .build();
+
+    attachmentInputStream.close();
+    HttpResponse<String> vedleggResponse = client.send(request, BodyHandlers.ofString());
+      JsonObject vedleggResponseJson = JsonParser.parseString(vedleggResponse.body()).getAsJsonObject();
+    System.out.println("Vedlegg id: " + vedleggResponseJson.get("uuid").getAsString());
+    System.out.println("Vedlegg response: " + vedleggResponse.statusCode());
+
+    return UUID.fromString(vedleggResponseJson.get("uuid").getAsString());
+  }
+
+  private static HttpResponse<String> createGu(JsonObject gu, String authToken, String epsgCode) throws Exception {
+    URI uri = URI.create(config.getApiEndpoint() + "/v1/GeotekniskUnders?epsgCode=" + epsgCode);
+    HttpRequest request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.ofString(gu.toString()))
+        .header("Authorization", "Bearer " + authToken)
+        .header("Content-Type", "application/json").header("Accept", "application/json")
+        .build();
+
+    HttpResponse<String> guResponse = client.send(request, BodyHandlers.ofString());
+    System.out.println("GU insert response: " + guResponse.statusCode());
+
+    return guResponse;
+  }
+
+  private static HttpResponse<String> updateGu(String guId, JsonObject gu, String authToken, String epsgCode) throws Exception {
+    URI uri = URI.create(config.getApiEndpoint() + "/v1/GeotekniskUnders/" +guId+  "?epsgCode=epsg_4326");
+
+    HttpRequest request = HttpRequest.newBuilder().uri(uri).PUT(BodyPublishers.ofString(gu.toString()))
+        .header("Authorization", "Bearer " + authToken)
+        .header("Content-Type", "application/json").header("Accept", "application/json")
+        .build();
+
+    HttpResponse<String> guResponse = client.send(request, BodyHandlers.ofString());
+
+    return guResponse;
+  }
+
+  private static String makeJwt(Configuration config) throws Exception {
     List<Base64> certChain = new ArrayList<>();
     certChain.add(Base64.encode(config.getCertificate().getEncoded()));
 
@@ -340,12 +292,10 @@ public class ExampleClient {
     }
 
     // Mark: consumer_org must be unique for each grant and issue time must be in UTC
-    JWTClaimsSet.Builder builder =
-        new JWTClaimsSet.Builder().audience(config.getAud()).issuer(config.getIss())
-            .claim("consumer_org", config.getConsumerOrg()).jwtID(UUID.randomUUID().toString())
-
-            .issueTime(new Date(Clock.systemUTC().millis()))
-            .expirationTime(new Date(Clock.systemUTC().millis() + 120000));
+    JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder().audience(config.getAud()).issuer(config.getIss())
+        .claim("consumer_org", config.getConsumerOrg()).jwtID(UUID.randomUUID().toString())
+        .issueTime(new Date(Clock.systemUTC().millis()))
+        .expirationTime(new Date(Clock.systemUTC().millis() + 120000));
 
     JWTClaimsSet claims = builder.build();
 
@@ -366,11 +316,10 @@ public class ExampleClient {
 
     try {
       HttpClient client = HttpClient.newHttpClient();
-      HttpRequest request =
-          HttpRequest.newBuilder().uri(URI.create(config.getTokenEndpoint()))
-              .POST(BodyPublishers.ofString(formBodyBuilder.toString()))
-              .header("Content-Type", "application/x-www-form-urlencoded")
-              .build();
+      HttpRequest request = HttpRequest.newBuilder().uri(URI.create(config.getTokenEndpoint()))
+          .POST(BodyPublishers.ofString(formBodyBuilder.toString()))
+          .header("Content-Type", "application/x-www-form-urlencoded")
+          .build();
 
       HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 
